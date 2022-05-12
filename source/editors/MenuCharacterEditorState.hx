@@ -80,10 +80,6 @@ class MenuCharacterEditorState extends MusicBeatState
 		FlxG.mouse.visible = true;
 		updateCharTypeBox();
 
-		#if android
-		addVirtualPad(FULL, NONE);
-		#end
-
 		super.create();
 	}
 
@@ -173,13 +169,10 @@ class MenuCharacterEditorState extends MusicBeatState
 		tab_group.name = "Character";
 		
 		imageInputText = new FlxUIInputText(10, 20, 80, characterFile.image, 8);
-		imageInputText.focusGained = () -> FlxG.stage.window.textInputEnabled = true;		
 		blockPressWhileTypingOn.push(imageInputText);
 		idleInputText = new FlxUIInputText(10, imageInputText.y + 35, 100, characterFile.idle_anim, 8);
-		idleInputText.focusGained = () -> FlxG.stage.window.textInputEnabled = true;		
 		blockPressWhileTypingOn.push(idleInputText);
 		confirmInputText = new FlxUIInputText(10, idleInputText.y + 35, 100, characterFile.confirm_anim, 8);
-		confirmInputText.focusGained = () -> FlxG.stage.window.textInputEnabled = true;		
 		blockPressWhileTypingOn.push(confirmInputText);
 
 		var reloadImageButton:FlxButton = new FlxButton(10, confirmInputText.y + 30, "Reload Char", function() {
@@ -285,7 +278,7 @@ class MenuCharacterEditorState extends MusicBeatState
 			FlxG.sound.muteKeys = TitleState.muteKeys;
 			FlxG.sound.volumeDownKeys = TitleState.volumeDownKeys;
 			FlxG.sound.volumeUpKeys = TitleState.volumeUpKeys;
-			if(FlxG.keys.justPressed.ESCAPE#if android || FlxG.android.justReleased.BACK #end) {
+			if(FlxG.keys.justPressed.ESCAPE) {
 				MusicBeatState.switchState(new editors.MasterEditorMenu());
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			}
@@ -293,19 +286,19 @@ class MenuCharacterEditorState extends MusicBeatState
 			var shiftMult:Int = 1;
 			if(FlxG.keys.pressed.SHIFT) shiftMult = 10;
 
-			if(FlxG.keys.justPressed.LEFT #if android || _virtualpad.buttonLeft.justPressed #end) {
+			if(FlxG.keys.justPressed.LEFT) {
 				characterFile.position[0] += shiftMult;
 				updateOffset();
 			}
-			if(FlxG.keys.justPressed.RIGHT #if android || _virtualpad.buttonRight.justPressed #end) {
+			if(FlxG.keys.justPressed.RIGHT) {
 				characterFile.position[0] -= shiftMult;
 				updateOffset();
 			}
-			if(FlxG.keys.justPressed.UP #if android || _virtualpad.buttonUp.justPressed #end) {
+			if(FlxG.keys.justPressed.UP) {
 				characterFile.position[1] += shiftMult;
 				updateOffset();
 			}
-			if(FlxG.keys.justPressed.DOWN #if android || _virtualpad.buttonDown.justPressed #end) {
+			if(FlxG.keys.justPressed.DOWN) {
 				characterFile.position[1] -= shiftMult;
 				updateOffset();
 			}
@@ -331,14 +324,12 @@ class MenuCharacterEditorState extends MusicBeatState
 
 	var _file:FileReference = null;
 	function loadCharacter() {
-		#if desktop //This is not for mobile
 		var jsonFilter:FileFilter = new FileFilter('JSON', 'json');
 		_file = new FileReference();
 		_file.addEventListener(Event.SELECT, onLoadComplete);
 		_file.addEventListener(Event.CANCEL, onLoadCancel);
 		_file.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
 		_file.browse([jsonFilter]);
-		#end
 	}
 
 	function onLoadComplete(_):Void
@@ -409,16 +400,11 @@ class MenuCharacterEditorState extends MusicBeatState
 			var splittedImage:Array<String> = imageInputText.text.trim().split('_');
 			var characterName:String = splittedImage[splittedImage.length-1].toLowerCase().replace(' ', '');
 
-			#if android
-                        sys.io.File.saveContent(Main.getDataPath() + characterName + ".json", data.trim());
-                        android.AndroidTools.toast("File Saved Successfully!!");
-			#else
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			_file.save(data, characterName + ".json");			
-			#end
+			_file.save(data, characterName + ".json");
 		}
 	}
 

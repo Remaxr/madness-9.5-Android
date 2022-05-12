@@ -18,9 +18,6 @@ import flixel.util.FlxSort;
 import flixel.util.FlxTimer;
 import flixel.input.keyboard.FlxKey;
 import openfl.events.KeyboardEvent;
-#if android
-import ui.Mobilecontrols;
-#end
 import FunkinLua;
 
 using StringTools;
@@ -43,10 +40,6 @@ class EditorPlayState extends MusicBeatState
 
 	var startOffset:Float = 0;
 	var startPos:Float = 0;
-
-	#if android
-	var mcontrols:Mobilecontrols; 
-	#end
 
 	public function new(startPos:Float) {
 		this.startPos = startPos;
@@ -152,28 +145,12 @@ class EditorPlayState extends MusicBeatState
 		stepTxt.borderSize = 1.25;
 		add(stepTxt);
 
-		var tipText:FlxText = new FlxText(10, FlxG.height - 24, 0, 'Press ESC / BACK to Go Back to Chart Editor', 16);
+		var tipText:FlxText = new FlxText(10, FlxG.height - 24, 0, 'Press ESC to Go Back to Chart Editor', 16);
 		tipText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tipText.borderSize = 2;
 		tipText.scrollFactor.set();
 		add(tipText);
 		FlxG.mouse.visible = false;
-
-		#if android
-			mcontrols = new Mobilecontrols();
-			switch (mcontrols.mode)
-			{
-				case VIRTUALPAD_RIGHT | VIRTUALPAD_LEFT | VIRTUALPAD_CUSTOM:
-					controls.setVirtualPadNOTES(mcontrols._virtualPad, FULL, NONE);
-				case HITBOX:
-					controls.setHitBoxNOTES(mcontrols._hitbox);
-				default:
-			}
-			trackedinputsNOTES = controls.trackedinputsNOTES;
-			controls.trackedinputsNOTES = [];
-
-			add(mcontrols);
-		#end	
 
 		//sayGo();
 		if(!ClientPrefs.controllerMode)
@@ -338,7 +315,7 @@ class EditorPlayState extends MusicBeatState
 	}
 
 	override function update(elapsed:Float) {
-		if (FlxG.keys.justPressed.ESCAPE#if android || FlxG.android.justReleased.BACK #end)
+		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			FlxG.sound.music.pause();
 			vocals.pause();
@@ -579,7 +556,7 @@ class EditorPlayState extends MusicBeatState
 				//var notesDatas:Array<Int> = [];
 				var notesStopped:Bool = false;
 
-				trace('test!');
+				//trace('test!');
 				var sortedNotesList:Array<Note> = [];
 				notes.forEachAlive(function(daNote:Note)
 				{
@@ -587,7 +564,7 @@ class EditorPlayState extends MusicBeatState
 					{
 						if(daNote.noteData == key && !daNote.isSustainNote)
 						{
-							trace('pushed note!');
+							//trace('pushed note!');
 							sortedNotesList.push(daNote);
 							//notesDatas.push(daNote.noteData);
 						}
