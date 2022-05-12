@@ -66,7 +66,8 @@ class ModsMenuState extends MusicBeatState
 
 	override function create()
 	{
-		Paths.destroyLoadedImages();
+		Paths.clearStoredMemory();
+		Paths.clearUnusedMemory();
 		WeekData.setDirectoryFromWeek();
 
 		#if desktop
@@ -77,7 +78,8 @@ class ModsMenuState extends MusicBeatState
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		add(bg);
-		
+		bg.screenCenter();
+
 		noModsTxt = new FlxText(0, 0, FlxG.width, "NO MODS INSTALLED\nPRESS BACK TO EXIT AND INSTALL A MOD", 48);
 		if(FlxG.random.bool(0.1)) noModsTxt.text += '\nBITCH.'; //meanie
 		noModsTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -87,7 +89,7 @@ class ModsMenuState extends MusicBeatState
 		noModsTxt.screenCenter();
 		visibleWhenNoMods.push(noModsTxt);
 
-		var path:String = Main.getDataPath() + 'modsList.txt';
+		var path:String = 'modsList.txt';
 		if(FileSystem.exists(path))
 		{
 			var leMods:Array<String> = CoolUtil.coolTextFile(path);
@@ -106,7 +108,7 @@ class ModsMenuState extends MusicBeatState
 
 		// FIND MOD FOLDERS
 		var boolshit = true;
-		if (FileSystem.exists(Main.getDataPath() + "modsList.txt")){
+		if (FileSystem.exists("modsList.txt")){
 			for (folder in Paths.getModDirectories())
 			{
 				if(!Paths.ignoreModFolders.contains(folder))
@@ -343,10 +345,6 @@ class ModsMenuState extends MusicBeatState
 
 		FlxG.mouse.visible = true;
 
-                #if android
-		addVirtualPad(UP_DOWN, B);
-		#end
-
 		super.create();
 	}
 
@@ -422,7 +420,7 @@ class ModsMenuState extends MusicBeatState
 			fileStr += values[0] + '|' + (values[1] ? '1' : '0');
 		}
 
-		var path:String = Main.getDataPath() + 'modsList.txt';
+		var path:String = 'modsList.txt';
 		File.saveContent(path, fileStr);
 	}
 

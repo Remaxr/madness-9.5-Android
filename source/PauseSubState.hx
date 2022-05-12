@@ -19,15 +19,13 @@ class PauseSubState extends MusicBeatSubstate
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
 	var menuItems:Array<String> = [];
-	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty'#if android, 'Chart Editor'#end, 'Exit to menu'];
+	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Exit to menu'];
 	var difficultyChoices = [];
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
 	var practiceText:FlxText;
 	//var botplayText:FlxText;
-
-	public static var transCamera:FlxCamera;
 
 	public function new(x:Float, y:Float)
 	{
@@ -123,15 +121,6 @@ class PauseSubState extends MusicBeatSubstate
 		changeSelection();
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
-
-                #if android
-		addVirtualPad(UP_DOWN, A);
-		
-		var camcontrol = new FlxCamera();
-		FlxG.cameras.add(camcontrol);
-		camcontrol.bgColor.alpha = 0;
-		_virtualpad.cameras = [camcontrol];
-		#end
 	}
 
 	override function update(elapsed:Float)
@@ -162,7 +151,6 @@ class PauseSubState extends MusicBeatSubstate
 				var poop = Highscore.formatSong(name, curSelected);
 				PlayState.SONG = Song.loadFromJson(poop, name);
 				PlayState.storyDifficulty = curSelected;
-				CustomFadeTransition.nextCamera = transCamera;
 				MusicBeatState.resetState();
 				FlxG.sound.music.volume = 0;
 				PlayState.changedDifficulty = true;
@@ -189,8 +177,6 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.instance.botplayTxt.visible = PlayState.instance.cpuControlled;
 					PlayState.instance.botplayTxt.alpha = 1;
 					PlayState.instance.botplaySine = 0;
-                                case 'Chart Editor':
-                                        MusicBeatState.switchState(new editors.ChartingState());
 				case "Exit to menu":
 					PlayState.deathCounter = 0;
 					PlayState.seenCutscene = false;

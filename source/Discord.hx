@@ -1,4 +1,3 @@
-#if desktop
 package;
 
 import Sys.sleep;
@@ -17,7 +16,7 @@ class DiscordClient
 	{
 		trace("Discord Client starting...");
 		DiscordRpc.start({
-			clientID: "863222024192262205",
+			clientID: "937659317539176509",
 			onReady: onReady,
 			onError: onError,
 			onDisconnected: onDisconnected
@@ -45,7 +44,7 @@ class DiscordClient
 			details: "In the Menus",
 			state: null,
 			largeImageKey: 'icon',
-			largeImageText: "Psych Engine"
+			largeImageText: "Friday Night Funkin 9.5"
 		});
 	}
 
@@ -99,4 +98,3 @@ class DiscordClient
 	}
 	#end
 }
-#end
